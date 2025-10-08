@@ -33,14 +33,48 @@ module sr_ff (
     output reg Q
 );
     always @(posedge clk) begin
-
-
-
+        // Use non-blocking assignments for sequential logic
+        case ({S, R})
+            2'b00: Q <= Q;
+            2'b01: Q <= 1'b0;
+            2'b10: Q <= 1'b1;
+            2'b11: Q <= 1'bx;
+        endcase
+    end
 endmodule
+
 ```
 ### SR Flip-Flop Test bench 
 ```verilog
-
+module sr_ff_tb;
+    reg S, R, clk;
+    wire Q;
+    sr_ff uut (
+        .S(S), 
+        .R(R), 
+        .clk(clk), 
+        .Q(Q)
+    );
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+    initial begin
+        S = 0; R = 0;
+        #10;
+        S = 0; R = 1;
+        #10;
+        S = 0; R = 0;
+        #10;
+        S = 1; R = 0;
+        #10;
+        S = 0; R = 0;
+        #10;
+        S = 1; R = 1;
+        #10;
+        $finish;
+    end
+endmodule
 
 
 ```
